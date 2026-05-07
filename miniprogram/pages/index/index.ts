@@ -431,8 +431,8 @@ Page({
         this.setData({ firstStepScanUnlocked: true })
       },
       fail: (err) => {
-        const msg = err?.errMsg || ''
-        if (msg.includes('cancel') || msg.includes('取消')) return
+        const msg = err && err.errMsg ? String(err.errMsg) : ''
+        if (msg.indexOf('cancel') !== -1 || msg.indexOf('取消') !== -1) return
         wx.showToast({ title: '扫码失败', icon: 'none' })
       },
     })

@@ -48,23 +48,27 @@ export function normalizeTaskPreset(raw: unknown): TaskPreset | null {
   const descIn = typeof o.desc === 'string' ? o.desc.trim() : ''
   const typeIn = isTaskType(o.type) ? o.type : undefined
 
-  const baseType: TaskType = typeIn ?? fallback?.type ?? 'default'
-  const baseDuration = coerceNumber(o.duration, fallback?.duration ?? 0)
+  const baseType: TaskType = typeIn != null ? typeIn : fallback != null ? fallback.type : 'default'
+  const baseDuration = coerceNumber(o.duration, fallback != null ? fallback.duration : 0)
 
   const merged: TaskPreset = {
     id,
-    title: titleIn || fallback?.title || '未命名任务',
-    desc: descIn || fallback?.desc || '',
+    title: titleIn || (fallback != null ? fallback.title : '') || '未命名任务',
+    desc: descIn || (fallback != null ? fallback.desc : ''),
     type: baseType,
     duration: baseType === 'timer' ? Math.max(1, Math.floor(baseDuration || 10)) : 0,
     linkAppId:
       typeof o.linkAppId === 'string' && o.linkAppId.trim()
         ? o.linkAppId.trim()
-        : fallback?.linkAppId,
+        : fallback != null
+          ? fallback.linkAppId
+          : undefined,
     linkPath:
       typeof o.linkPath === 'string' && o.linkPath.trim()
         ? o.linkPath.trim()
-        : fallback?.linkPath,
+        : fallback != null
+          ? fallback.linkPath
+          : undefined,
   }
 
   if (merged.type !== 'link') {

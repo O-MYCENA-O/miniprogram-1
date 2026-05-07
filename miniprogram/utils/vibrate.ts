@@ -7,5 +7,5 @@ import { readConfigVibrate } from './storage'
 
 export function triggerVibrate(options?: WechatMiniprogram.VibrateShortOption): void {
   if (!readConfigVibrate()) return
-  wx.vibrateShort(options ?? { type: 'medium' })
+  wx.vibrateShort(options != null ? options : { type: 'medium' })
 }

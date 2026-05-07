@@ -148,8 +148,8 @@ Page({
         wx.showToast({ title: '口令已保存', icon: 'success', duration: 900 })
       },
       fail: (err) => {
-        const msg = err?.errMsg || ''
-        if (msg.includes('cancel') || msg.includes('取消')) return
+        const msg = err && err.errMsg ? String(err.errMsg) : ''
+        if (msg.indexOf('cancel') !== -1 || msg.indexOf('取消') !== -1) return
         wx.showToast({ title: '扫码失败', icon: 'none' })
       },
     })
@@ -255,7 +255,7 @@ Page({
     }
 
     const touch = e.changedTouches[0]
-    const fromIndex = this._dragTouch?.index ?? -1
+    const fromIndex = this._dragTouch != null ? this._dragTouch.index : -1
     this._dragTouch = null
     this._lastFloatTs = 0
 
