@@ -24,7 +24,7 @@
               bindchange="onBgMusicSwitchChange"
             />
           </view>
-          <text class="settings-block__hint">默认开启；请将 bgm.mp3 放入 miniprogram/audio。真机无声时在首页轻触任意处一次</text>
+          <text class="settings-block__hint">随机播放早安Jazz Playlist；设置后回到首页生效</text>
         </view>
 
         <view class="flow-settings">

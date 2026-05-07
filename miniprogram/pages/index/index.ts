@@ -2,7 +2,6 @@ import {
   applyTaskCompletion,
   flowTasksAllFinished,
   flowTasksWithInitialStatuses,
-  type FlowTask,
 } from './flowModel'
 import {
   DEFAULT_PAGE_TITLE,
@@ -51,32 +50,32 @@ function getLast5AM(timestamp: number): number {
   return timestamp >= today5 ? today5 : today5 - 24 * 60 * 60 * 1000
 }
 
-/** 包内背景音乐路径；请将 bgm1.mp3 放入 miniprogram/audio/（多首随机可在数组中追加已存在文件） */
+/** CDN 背景音乐路径；音频文件已上传到腾讯云 COS */
 const BGM_TRACK_POOL = [
-  '/audio/bgm1.mp3',
-  '/audio/bgm2.mp3',
-  '/audio/bgm3.mp3',
-  '/audio/bgm4.mp3',
-  '/audio/bgm5.mp3',
-  '/audio/bgm6.mp3',
-  '/audio/bgm7.mp3',
-  '/audio/bgm8.mp3',
-  '/audio/bgm9.mp3',
-  '/audio/bgm10.mp3',
-  '/audio/bgm11.mp3',
-  '/audio/bgm12.mp3',
-  '/audio/bgm13.mp3',
-  '/audio/bgm14.mp3',
-  '/audio/bgm15.mp3',
-  '/audio/bgm16.mp3',
-  '/audio/bgm17.mp3',
-  '/audio/bgm18.mp3',
-  '/audio/bgm19.mp3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm1.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm2.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm3.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm4.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm5.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm6.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm7.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm8.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm9.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm10.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm11.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm12.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm13.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm14.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm15.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm16.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm17.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm18.MP3',
+  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm19.MP3',
 ]
 
 function pickRandomBgmSrc(exclude?: string): string {
   const pool = BGM_TRACK_POOL
-  if (pool.length === 0) return '/audio/bgm1.mp3'
+  if (pool.length === 0) return 'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm1.MP3'
   if (pool.length === 1) return pool[0]!
   let pick = pool[Math.floor(Math.random() * pool.length)]!
   let tries = 0
@@ -140,7 +139,7 @@ Page({
 
   onHide() {
     this.stopClock()
-    this.pauseBgMusic()
+    //this.pauseBgMusic()
   },
 
   /** 捕获阶段：任意触摸后再次 play，满足真机「须用户手势」音频策略 */
