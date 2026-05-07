@@ -24,7 +24,7 @@
               bindchange="onBgMusicSwitchChange"
             />
           </view>
-          <text class="settings-block__hint">开启后，首页随机播放包内 mp3；请将 bgm.mp3、bgm2.mp3…bgm5.mp3 放入 miniprogram/audio（可只放其中几首）</text>
+          <text class="settings-block__hint">开启后，首页随机播放早安Playlist</text>
         </view>
 
         <view class="flow-settings">

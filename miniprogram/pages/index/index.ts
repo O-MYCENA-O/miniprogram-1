@@ -53,16 +53,30 @@ function getLast5AM(timestamp: number): number {
 
 /** 包内背景音乐候选（随机播放）；按需放入 miniprogram/audio/ 目录 */
 const BGM_TRACK_POOL = [
-  '/audio/bgm.mp3',
+  '/audio/bgm1.mp3',
   '/audio/bgm2.mp3',
   '/audio/bgm3.mp3',
   '/audio/bgm4.mp3',
   '/audio/bgm5.mp3',
+  '/audio/bgm6.mp3',
+  '/audio/bgm7.mp3',
+  '/audio/bgm8.mp3',
+  '/audio/bgm9.mp3',
+  '/audio/bgm10.mp3',
+  '/audio/bgm11.mp3',
+  '/audio/bgm12.mp3',
+  '/audio/bgm13.mp3',
+  '/audio/bgm14.mp3',
+  '/audio/bgm15.mp3',
+  '/audio/bgm16.mp3',
+  '/audio/bgm17.mp3',
+  '/audio/bgm18.mp3',
+  '/audio/bgm19.mp3',
 ]
 
 function pickRandomBgmSrc(exclude?: string): string {
   const pool = BGM_TRACK_POOL
-  if (pool.length === 0) return '/audio/bgm.mp3'
+  if (pool.length === 0) return '/audio/bgm1.mp3'
   if (pool.length === 1) return pool[0]!
   let pick = pool[Math.floor(Math.random() * pool.length)]!
   let tries = 0
