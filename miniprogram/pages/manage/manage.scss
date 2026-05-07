@@ -1,0 +1,382 @@
+$bg: #faf9f6;
+$ink: #3a3a3a;
+$mute: #869d96;
+$field: #e5e2da;
+$motion: 280ms cubic-bezier(0.33, 1, 0.68, 1);
+
+/** 遮罩层叠（满足盖住下方列表；面板略高于遮罩） */
+$z-mask: 100;
+$z-panel: 101;
+
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $bg;
+  color: $ink;
+}
+
+.manage-page {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.manage-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.manage-body--locked {
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.manage-scroll {
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+}
+
+.pad-asymmetric {
+  padding: 40rpx 24rpx 80rpx 48rpx;
+}
+
+.flow-settings {
+  margin-bottom: 36rpx;
+  padding-bottom: 28rpx;
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.18);
+}
+
+.flow-settings__label {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: $ink;
+}
+
+.flow-settings__hint {
+  display: block;
+  margin-top: 10rpx;
+  margin-bottom: 18rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  color: rgba(58, 58, 58, 0.52);
+}
+
+.flow-settings__row {
+  display: flex;
+  align-items: stretch;
+  gap: 16rpx;
+}
+
+.flow-settings__input {
+  flex: 1;
+  min-width: 0;
+  padding: 18rpx 14rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  color: $ink;
+  background: $field;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.38);
+}
+
+.flow-settings__save {
+  flex-shrink: 0;
+  padding: 0 28rpx;
+  font-size: 26rpx;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: $bg;
+  background: $mute;
+  border: 1rpx solid $ink;
+  border-radius: 0;
+  line-height: 2.2;
+}
+
+.flow-settings__save::after {
+  border: none;
+}
+
+.flow-settings__save--hover {
+  opacity: 0.9;
+}
+
+.settings-block {
+  margin-bottom: 36rpx;
+  padding-bottom: 8rpx;
+}
+
+.settings-block__title {
+  display: block;
+  margin-bottom: 20rpx;
+  font-size: 26rpx;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: $ink;
+}
+
+.settings-block__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 24rpx 0;
+  margin-bottom: 0;
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.22);
+}
+
+.settings-block__label {
+  flex: 1;
+  font-size: 30rpx;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  color: $ink;
+}
+
+.settings-block__switch {
+  transform: scale(0.92);
+  transform-origin: center right;
+}
+
+.manage-add {
+  width: 100%;
+  margin-bottom: 32rpx;
+  padding: 22rpx 0;
+  font-size: 30rpx;
+  color: $bg;
+  background: $mute;
+  border: 1rpx solid $ink;
+  border-radius: 0;
+  letter-spacing: 0.08em;
+  transition: opacity $motion, transform $motion;
+}
+
+.manage-add:active {
+  opacity: 0.9;
+  transform: scale(0.995);
+}
+
+.manage-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24rpx;
+  padding: 28rpx 24rpx;
+  margin-bottom: 20rpx;
+  border: 1rpx solid rgba(58, 58, 58, 0.32);
+  background: #fff;
+  transition: background-color $motion, opacity $motion, transform $motion;
+}
+
+.manage-card:active {
+  transform: scale(0.998);
+}
+
+.manage-card__title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.manage-card__desc {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 26rpx;
+  line-height: 1.55;
+  color: rgba(58, 58, 58, 0.72);
+}
+
+.manage-card__meta {
+  display: block;
+  margin-top: 16rpx;
+  font-size: 22rpx;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $mute;
+}
+
+.manage-card__tools {
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+  align-items: flex-end;
+}
+
+.manage-icon {
+  font-size: 24rpx;
+  letter-spacing: 0.06em;
+  color: $mute;
+  padding: 8rpx 0;
+  transition: color $motion;
+}
+
+.manage-icon--del {
+  color: rgba(58, 58, 58, 0.52);
+}
+
+.manage-empty {
+  margin-top: 48rpx;
+  font-size: 26rpx;
+  color: rgba(58, 58, 58, 0.52);
+  line-height: 1.6;
+}
+
+/* —— 弹层：独立 fixed，避免与 flex 子项叠层错乱 —— */
+.sheet-mask {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: $z-mask;
+  background: rgba(58, 58, 58, 0.26);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/** 居中弹层：避开底部手势区域遮挡 */
+.sheet-panel--centered {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  right: auto;
+  bottom: auto;
+  z-index: $z-panel;
+  transform: translate(-50%, -50%);
+  width: 86%;
+  max-width: 620rpx;
+  max-height: 72vh;
+  overflow-y: auto;
+  padding: 36rpx 32rpx calc(40rpx + env(safe-area-inset-bottom));
+  background: $bg;
+  border: 1rpx solid rgba(58, 58, 58, 0.22);
+  box-sizing: border-box;
+  animation: modal-in 260ms $motion both;
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-50% + 20rpx));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.sheet-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24rpx;
+  margin-bottom: 8rpx;
+}
+
+.sheet-title {
+  display: block;
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.sheet-hint {
+  display: block;
+  margin-top: 8rpx;
+  margin-bottom: 24rpx;
+  font-size: 24rpx;
+  color: rgba(58, 58, 58, 0.52);
+  line-height: 1.5;
+}
+
+.sheet-kind {
+  display: block;
+  margin-bottom: 20rpx;
+  font-size: 24rpx;
+  letter-spacing: 0.08em;
+  color: $mute;
+}
+
+.sheet-link {
+  font-size: 24rpx;
+  color: $mute;
+  letter-spacing: 0.06em;
+  border-bottom: 1rpx solid rgba(134, 157, 150, 0.55);
+  padding-bottom: 2rpx;
+}
+
+.type-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16rpx;
+}
+
+.type-tile {
+  padding: 26rpx 20rpx;
+  border: 1rpx solid $ink;
+  font-size: 28rpx;
+  letter-spacing: 0.06em;
+  background: #fff;
+  transition: background-color $motion, color $motion;
+}
+
+.type-tile:active {
+  background: $field;
+}
+
+.field {
+  margin-bottom: 22rpx;
+}
+
+.field-label {
+  display: block;
+  font-size: 22rpx;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(58, 58, 58, 0.52);
+  margin-bottom: 8rpx;
+}
+
+.field-input {
+  width: 100%;
+  padding: 18rpx 12rpx;
+  box-sizing: border-box;
+  font-size: 28rpx;
+  color: $ink;
+  background: $field;
+  border: none;
+  border-radius: 0;
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.35);
+}
+
+.sheet-actions {
+  display: flex;
+  gap: 16rpx;
+  margin-top: 28rpx;
+}
+
+.sheet-btn {
+  flex: 1;
+  padding: 20rpx 0;
+  font-size: 28rpx;
+  border-radius: 0;
+  border: 1rpx solid $ink;
+}
+
+.sheet-btn--ghost {
+  background: transparent;
+  color: $ink;
+}
+
+.sheet-btn--primary {
+  background: $mute;
+  color: $bg;
+}

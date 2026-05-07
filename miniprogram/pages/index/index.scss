@@ -1,0 +1,226 @@
+@import '../../styles/variables.scss';
+
+page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: $color-bg-page;
+}
+
+.scrollarea {
+  flex: 1;
+  overflow-y: hidden;
+}
+
+.nav-manage-btn {
+  margin-left: 12rpx;
+  padding: 10rpx 24rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.25;
+  color: $color-text-primary;
+  background: $color-field-soft;
+  border: 1rpx solid #3a3a3a;
+  border-radius: 0;
+  box-sizing: border-box;
+}
+
+.nav-manage-btn::after {
+  border: none;
+}
+
+.nav-manage-btn--hover {
+  opacity: 0.88;
+}
+
+.flow {
+  padding: 48rpx 28rpx 72rpx 44rpx;
+}
+
+.flow-lead {
+  padding-top: 24rpx;
+  margin-bottom: 48rpx;
+}
+
+.flow-lead--offset {
+  padding-right: 120rpx;
+}
+
+.flow-lead__kicker {
+  display: block;
+  font-size: 22rpx;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $color-text-muted;
+  margin-bottom: 8rpx;
+}
+
+.flow-lead__title {
+  display: block;
+  font-size: 56rpx;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  font-weight: 600;
+  color: $color-text-primary;
+  margin-bottom: 48rpx;
+}
+
+.task-list {
+  margin-top: 16rpx;
+}
+
+.task-list .flow-card:first-child {
+  margin-top: 0;
+}
+
+.flow-banner {
+  margin-bottom: 28rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 1rpx solid $color-border;
+}
+
+.flow-banner__text {
+  display: block;
+  font-size: 28rpx;
+  color: $color-text-primary;
+  margin-bottom: 16rpx;
+}
+
+.flow-card {
+  position: relative;
+  border: 1rpx solid $color-border;
+  padding: 36rpx 32rpx;
+  margin-bottom: 28rpx;
+  background: $color-bg-card;
+  border-radius: $radius-card;
+  transition:
+    opacity $motion-duration $motion-ease,
+    background-color $motion-duration $motion-ease,
+    transform $motion-duration $motion-ease,
+    filter $motion-duration $motion-ease;
+}
+
+.flow-card__row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24rpx;
+}
+
+.flow-card__titles {
+  flex: 1;
+  min-width: 0;
+}
+
+.flow-card__title {
+  display: block;
+  font-size: 38rpx;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: $color-text-primary;
+  transition:
+    opacity $motion-duration $motion-ease,
+    text-decoration-color $motion-duration $motion-ease;
+}
+
+.flow-card__desc {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 28rpx;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  color: $color-text-primary;
+}
+
+.flow-card__hint {
+  margin-top: 20rpx;
+  font-size: 24rpx;
+  letter-spacing: 0.08em;
+}
+
+.flow-card__hint--locked {
+  color: $color-text-muted;
+}
+
+.flow-card__actions {
+  margin-top: 28rpx;
+}
+
+.flow-card--locked {
+  background: darken($color-bg-card, 6%);
+  filter: grayscale(0.08);
+}
+
+.flow-card--locked .flow-card__title,
+.flow-card--locked .flow-card__desc {
+  color: mix($color-text-primary, $color-bg-page, 72%);
+}
+
+.flow-card--active {
+  transform: translateY(0);
+}
+
+.flow-card--finished {
+  opacity: 0.72;
+}
+
+.flow-card--finished .flow-card__title {
+  text-decoration: line-through;
+  text-decoration-thickness: 1rpx;
+  text-underline-offset: 8rpx;
+  opacity: 0.85;
+}
+
+.flow-card__mark {
+  flex-shrink: 0;
+  width: 36rpx;
+  height: 36rpx;
+  margin-top: 6rpx;
+  border: 1rpx solid $color-border;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.flow-card__mark::after {
+  content: '';
+  position: absolute;
+  left: 8rpx;
+  top: 10rpx;
+  width: 18rpx;
+  height: 10rpx;
+  border-left: 2rpx solid $color-accent;
+  border-bottom: 2rpx solid $color-accent;
+  transform: rotate(-45deg);
+}
+
+.flow-btn {
+  margin-top: 0;
+  padding: 20rpx 28rpx;
+  font-size: 28rpx;
+  background: $color-accent;
+  color: #fff;
+  border: 1rpx solid $color-border;
+  border-radius: $radius-card;
+  transition:
+    background-color $motion-duration $motion-ease,
+    opacity $motion-duration $motion-ease,
+    transform $motion-duration $motion-ease;
+}
+
+.flow-btn:active {
+  transform: scale(0.98);
+}
+
+.flow-btn--ghost {
+  background: transparent;
+  color: $color-text-primary;
+}
+
+.flow-btn--accent-alt {
+  background: $color-accent-alt;
+}
+
+.flow-btn[disabled] {
+  opacity: 0.92;
+}
