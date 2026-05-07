@@ -8,6 +8,7 @@ import {
   DEFAULT_PAGE_TITLE,
   clearFirstStepScanOk,
   clearFlowCompletedPeriod,
+  readBgMusicEnabled,
   readFirstStepScanOk,
   readFlowCompletedPeriod,
   readFlowStartScanConfig,
@@ -50,6 +51,28 @@ function getLast5AM(timestamp: number): number {
   return timestamp >= today5 ? today5 : today5 - 24 * 60 * 60 * 1000
 }
 
+/** 包内背景音乐候选（随机播放）；按需放入 miniprogram/audio/ 目录 */
+const BGM_TRACK_POOL = [
+  '/audio/bgm.mp3',
+  '/audio/bgm2.mp3',
+  '/audio/bgm3.mp3',
+  '/audio/bgm4.mp3',
+  '/audio/bgm5.mp3',
+]
+
+function pickRandomBgmSrc(exclude?: string): string {
+  const pool = BGM_TRACK_POOL
+  if (pool.length === 0) return '/audio/bgm.mp3'
+  if (pool.length === 1) return pool[0]!
+  let pick = pool[Math.floor(Math.random() * pool.length)]!
+  let tries = 0
+  while (exclude && pick === exclude && tries < 12) {
+    pick = pool[Math.floor(Math.random() * pool.length)]!
+    tries += 1
+  }
+  return pick
+}
+
 function scanResultMatches(expectedToken: string, rawResult: string): boolean {
   const r = (rawResult || '').trim()
   if (!r) return false
@@ -83,12 +106,14 @@ Page({
   _timerHandle: null as TimerHandle | null,
   _clockHandle: null as ClockHandle | null,
   _confettiTimer: null as ConfettiTimerHandle | null,
+  _bgm: null as WechatMiniprogram.InnerAudioContext | null,
 
   onLoad() {
     this.tickClock()
     this.syncPageTitleFromStorage()
     this.syncTasksFromStorage()
     this.startClock()
+    this.ensureBgmContext()
   },
 
   onShow() {
@@ -96,10 +121,63 @@ Page({
     this.syncPageTitleFromStorage()
     this.syncTasksFromStorage()
     this.startClock()
+    this.syncBgMusicPlayback()
   },
 
   onHide() {
     this.stopClock()
+    this.pauseBgMusic()
+  },
+
+  ensureBgmContext() {
+    if (this._bgm) return
+    const ctx = wx.createInnerAudioContext()
+    ctx.loop = false
+    ctx.volume = 0.35
+    ctx.obeyMuteSwitch = true
+    ctx.onEnded(() => {
+      if (!readBgMusicEnabled() || !this._bgm) return
+      const prev = this._bgm.src || ''
+      const next = pickRandomBgmSrc(prev)
+      this._bgm.src = next
+      try {
+        this._bgm.play()
+      } catch (e) {
+        console.warn('[bgm] next track play failed', e)
+      }
+    })
+    ctx.onError((err) => {
+      console.warn('[bgm] play error', err)
+    })
+    this._bgm = ctx
+  },
+
+  syncBgMusicPlayback() {
+    if (!readBgMusicEnabled()) {
+      this.pauseBgMusic()
+      return
+    }
+    this.ensureBgmContext()
+    const ctx = this._bgm
+    if (!ctx) return
+    try {
+      if (!ctx.src) {
+        ctx.src = pickRandomBgmSrc()
+      }
+      ctx.play()
+    } catch (e) {
+      console.warn('[bgm] play failed', e)
+    }
+  },
+
+  pauseBgMusic() {
+    if (this._bgm) {
+      try {
+        this._bgm.pause()
+      } catch {
+        // ignore
+      }
+    }
   },
 
   tickClock() {
@@ -220,6 +298,15 @@ Page({
     if (this._confettiTimer !== null) {
       clearTimeout(this._confettiTimer)
       this._confettiTimer = null
+    }
+    if (this._bgm) {
+      try {
+        this._bgm.stop()
+        this._bgm.destroy()
+      } catch {
+        // ignore
+      }
+      this._bgm = null
     }
   },
 

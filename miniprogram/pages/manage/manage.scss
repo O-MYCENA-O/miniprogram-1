@@ -239,6 +239,16 @@ page {
   transform-origin: center right;
 }
 
+.settings-block__hint {
+  display: block;
+  margin-top: 8rpx;
+  margin-bottom: 4rpx;
+  font-size: 22rpx;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  color: rgba(58, 58, 58, 0.52);
+}
+
 .manage-add {
   width: 100%;
   margin-bottom: 32rpx;
@@ -267,16 +277,14 @@ page {
 }
 
 .manage-card-hit {
+  flex: 1;
   min-width: 0;
-  touch-action: none;
+  align-self: stretch;
 }
 
-.manage-card-hit--ghost .manage-card {
-  opacity: 0.32;
-  transform: scale(0.98);
-  transition:
-    opacity $motion,
-    transform $motion;
+.manage-card-hit--ghost {
+  opacity: 0.38;
+  transition: opacity $motion;
 }
 
 .manage-card__badge {

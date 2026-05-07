@@ -15,6 +15,16 @@
               bindchange="onVibrateSwitchChange"
             />
           </view>
+          <view class="settings-block__row">
+            <text class="settings-block__label">首页背景音乐</text>
+            <switch
+              class="settings-block__switch"
+              checked="{{configBgMusic}}"
+              color="#869D96"
+              bindchange="onBgMusicSwitchChange"
+            />
+          </view>
+          <text class="settings-block__hint">开启后，首页随机播放包内 mp3；请将 bgm.mp3、bgm2.mp3…bgm5.mp3 放入 miniprogram/audio（可只放其中几首）</text>
         </view>
 
         <view class="flow-settings">
@@ -65,17 +75,17 @@
         <view class="manage-task-list">
           <block wx:for="{{taskList}}" wx:key="id">
             <view class="manage-task-row">
-              <view
-                class="manage-card-hit {{dragging && draggingId === item.id ? 'manage-card-hit--ghost' : ''}}"
-                data-index="{{index}}"
-                data-id="{{item.id}}"
-                bindtouchstart="onTileTouchStart"
-                bindtouchmove="onTileTouchMove"
-                bindtouchend="onTileTouchEnd"
-                bindtouchcancel="onTileTouchEnd"
-              >
-                <view class="manage-card">
-                  <text wx:if="{{index === 0 && flowScanEnabled}}" class="manage-card__badge">扫码</text>
+              <view class="manage-card">
+                <text wx:if="{{index === 0 && flowScanEnabled}}" class="manage-card__badge">扫码</text>
+                <view
+                  class="manage-card-hit {{dragging && draggingId === item.id ? 'manage-card-hit--ghost' : ''}}"
+                  data-index="{{index}}"
+                  data-id="{{item.id}}"
+                  bindtouchstart="onTileTouchStart"
+                  bindtouchmove="onTileTouchMove"
+                  bindtouchend="onTileTouchEnd"
+                  bindtouchcancel="onTileTouchEnd"
+                >
                   <view class="manage-card__main">
                     <text class="manage-card__title">{{item.title}}</text>
                     <text wx:if="{{item.desc}}" class="manage-card__desc">{{item.desc}}</text>
@@ -83,10 +93,10 @@
                       {{item.type === 'default' ? 'Standard' : (item.type === 'timer' ? 'Timer' : 'MiniProgram')}}
                     </text>
                   </view>
-                  <view class="manage-card__tools" catchtouchstart="noopStop">
-                    <text class="manage-icon manage-icon--edit" data-id="{{item.id}}" catchtap="onEditTap">编辑</text>
-                    <text class="manage-icon manage-icon--del" data-id="{{item.id}}" catchtap="onDeleteTap">删除</text>
-                  </view>
+                </view>
+                <view class="manage-card__tools">
+                  <view class="manage-icon manage-icon--edit" data-id="{{item.id}}" bindtap="onEditTap">编辑</view>
+                  <view class="manage-icon manage-icon--del" data-id="{{item.id}}" bindtap="onDeleteTap">删除</view>
                 </view>
               </view>
             </view>

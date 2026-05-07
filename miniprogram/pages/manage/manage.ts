@@ -1,10 +1,12 @@
 import type { TaskPreset, TaskType } from '../index/flowModel'
 import {
   createTaskId,
+  readBgMusicEnabled,
   readConfigVibrate,
   readFlowStartScanConfig,
   readPageTitle,
   readSnapshot,
+  saveBgMusicEnabled,
   saveConfigVibrate,
   saveFlowStartScanConfig,
   savePageTitle,
@@ -68,6 +70,7 @@ Page({
     flowPageTitle: '',
     /** 与本地 config_vibrate 同步，绑定 switch */
     configVibrate: false,
+    configBgMusic: false,
     taskList: [] as TaskPreset[],
     editorOpen: false,
     editorPhase: 1,
@@ -98,12 +101,14 @@ Page({
     this.reloadList()
     this.syncFlowTitleDraft()
     this.syncVibrateSwitch()
+    this.syncBgMusicSwitch()
     this.syncScanDraft()
   },
 
   onShow() {
     this.syncFlowTitleDraft()
     this.syncVibrateSwitch()
+    this.syncBgMusicSwitch()
     this.syncScanDraft()
   },
 
@@ -167,8 +172,6 @@ Page({
       taskList: snap.tasks,
     })
   },
-
-  noopStop() {},
 
   clearLongPressTimer() {
     if (this._longPressTimer !== null) {
@@ -263,7 +266,7 @@ Page({
 
     wx.createSelectorQuery()
       .in(this)
-      .selectAll('.manage-card-hit')
+      .selectAll('.manage-card')
       .boundingClientRect()
       .exec((res) => {
         const rects = res[0] as WechatMiniprogram.BoundingClientRectCallbackResult[] | undefined
@@ -318,10 +321,21 @@ Page({
     this.setData({ configVibrate: readConfigVibrate() })
   },
 
+  syncBgMusicSwitch() {
+    this.setData({ configBgMusic: readBgMusicEnabled() })
+  },
+
   onVibrateSwitchChange(e: WechatMiniprogram.SwitchChange) {
     const enabled = !!e.detail.value
     saveConfigVibrate(enabled)
     this.setData({ configVibrate: enabled })
+  },
+
+  onBgMusicSwitchChange(e: WechatMiniprogram.SwitchChange) {
+    const enabled = !!e.detail.value
+    saveBgMusicEnabled(enabled)
+    this.setData({ configBgMusic: enabled })
+    wx.showToast({ title: enabled ? '返回首页后将播放' : '已关闭背景音乐', icon: 'none', duration: 900 })
   },
 
   syncFlowTitleDraft() {

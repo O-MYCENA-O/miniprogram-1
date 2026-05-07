@@ -309,3 +309,29 @@ export function saveConfigVibrate(enabled: boolean): void {
     wx.showToast({ title: '设置保存失败', icon: 'none' })
   }
 }
+
+/** 首页背景音乐（包内 /audio/bgm.mp3），默认关闭 */
+export const CONFIG_BG_MUSIC_KEY = 'config_bg_music'
+
+export function readBgMusicEnabled(): boolean {
+  try {
+    const v = wx.getStorageSync(CONFIG_BG_MUSIC_KEY) as unknown
+    if (v === true) return true
+    if (v === false) return false
+    if (v === 'true') return true
+    if (v === 'false') return false
+    if (typeof v === 'number') return v !== 0
+  } catch {
+    // ignore
+  }
+  return false
+}
+
+export function saveBgMusicEnabled(enabled: boolean): void {
+  try {
+    wx.setStorageSync(CONFIG_BG_MUSIC_KEY, !!enabled)
+  } catch (e) {
+    console.error('saveBgMusicEnabled failed', e)
+    wx.showToast({ title: '设置保存失败', icon: 'none' })
+  }
+}
