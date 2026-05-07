@@ -24,7 +24,7 @@
               bindchange="onBgMusicSwitchChange"
             />
           </view>
-          <text class="settings-block__hint">开启后，首页随机播放早安Playlist</text>
+          <text class="settings-block__hint">默认开启；请将 bgm.mp3 放入 miniprogram/audio。真机无声时在首页轻触任意处一次</text>
         </view>
 
         <view class="flow-settings">
@@ -34,7 +34,7 @@
             <input
               class="flow-settings__input"
               value="{{flowPageTitle}}"
-              placeholder="例如：线性任务流"
+              placeholder="例如：太阳当空照，花儿对我笑"
               data-field="flowPageTitle"
               bindinput="onFormInput"
             />
@@ -152,7 +152,7 @@
               class="field-input"
               type="number"
               value="{{formDuration}}"
-              placeholder="如 60"
+              placeholder="如 10"
               data-field="formDuration"
               bindinput="onFormInput"
             />

@@ -12,7 +12,7 @@
   ></view>
 </view>
 
-<view class="index-shell">
+<view class="index-shell" capture-bindtap="onShellCaptureTap">
   <view class="flow-clock" aria-label="当前时间">
     <text class="flow-clock__date">{{clockDate}}</text>
     <text class="flow-clock__time">{{clockTime}}</text>

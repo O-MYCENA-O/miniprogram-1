@@ -51,7 +51,7 @@ function getLast5AM(timestamp: number): number {
   return timestamp >= today5 ? today5 : today5 - 24 * 60 * 60 * 1000
 }
 
-/** 包内背景音乐候选（随机播放）；按需放入 miniprogram/audio/ 目录 */
+/** 包内背景音乐路径；请将 bgm1.mp3 放入 miniprogram/audio/（多首随机可在数组中追加已存在文件） */
 const BGM_TRACK_POOL = [
   '/audio/bgm1.mp3',
   '/audio/bgm2.mp3',
@@ -143,23 +143,30 @@ Page({
     this.pauseBgMusic()
   },
 
+  /** 捕获阶段：任意触摸后再次 play，满足真机「须用户手势」音频策略 */
+  onShellCaptureTap() {
+    this.syncBgMusicPlayback()
+  },
+
   ensureBgmContext() {
     if (this._bgm) return
     const ctx = wx.createInnerAudioContext()
-    ctx.loop = false
-    ctx.volume = 0.35
+    ctx.loop = BGM_TRACK_POOL.length <= 1
+    ctx.volume = 0.4
     ctx.obeyMuteSwitch = true
-    ctx.onEnded(() => {
-      if (!readBgMusicEnabled() || !this._bgm) return
-      const prev = this._bgm.src || ''
-      const next = pickRandomBgmSrc(prev)
-      this._bgm.src = next
-      try {
-        this._bgm.play()
-      } catch (e) {
-        console.warn('[bgm] next track play failed', e)
-      }
-    })
+    if (!ctx.loop) {
+      ctx.onEnded(() => {
+        if (!readBgMusicEnabled() || !this._bgm) return
+        const prev = this._bgm.src || ''
+        const next = pickRandomBgmSrc(prev)
+        this._bgm.src = next
+        try {
+          this._bgm.play()
+        } catch (e) {
+          console.warn('[bgm] next track play failed', e)
+        }
+      })
+    }
     ctx.onError((err) => {
       console.warn('[bgm] play error', err)
     })

@@ -9,7 +9,7 @@ const STORAGE_KEY = 'morning_routine_flow_tasks_v1'
 /** 首页大标题：与任务列表分 Key 存储 */
 export const PAGE_TITLE_STORAGE_KEY = 'morning_routine_page_title_v1'
 
-export const DEFAULT_PAGE_TITLE = '线性任务流'
+export const DEFAULT_PAGE_TITLE = '早安，你好☀️'
 
 export interface TaskStorageSnapshot {
   tasks: TaskPreset[]
@@ -288,21 +288,20 @@ export function clearFlowCompletedPeriod(): void {
   }
 }
 
-/** 与震动开关对应的本地缓存字段（默认关闭） */
+/** 与震动开关对应的本地缓存字段（未写入时默认开启） */
 export const CONFIG_VIBRATE_KEY = 'config_vibrate'
 
 export function readConfigVibrate(): boolean {
   try {
     const v = wx.getStorageSync(CONFIG_VIBRATE_KEY) as unknown
-    if (v === true) return true
-    if (v === false) return false
-    if (v === 'true') return true
-    if (v === 'false') return false
-    if (typeof v === 'number') return v !== 0
+    if (v === false || v === 'false') return false
+    if (v === true || v === 'true') return true
+    if (typeof v === 'number' && v === 0) return false
+    // 未写入、空字符串等：默认开启
+    return true
   } catch {
-    // ignore
+    return true
   }
-  return false
 }
 
 export function saveConfigVibrate(enabled: boolean): void {
@@ -314,21 +313,20 @@ export function saveConfigVibrate(enabled: boolean): void {
   }
 }
 
-/** 首页背景音乐（包内 /audio/bgm.mp3），默认关闭 */
+/** 首页背景音乐（包内音频），未写入时默认开启 */
 export const CONFIG_BG_MUSIC_KEY = 'config_bg_music'
 
 export function readBgMusicEnabled(): boolean {
   try {
     const v = wx.getStorageSync(CONFIG_BG_MUSIC_KEY) as unknown
-    if (v === true) return true
-    if (v === false) return false
-    if (v === 'true') return true
-    if (v === 'false') return false
-    if (typeof v === 'number') return v !== 0
+    if (v === false || v === 'false') return false
+    if (v === true || v === 'true') return true
+    if (typeof v === 'number' && v === 0) return false
+    // 未写入、空字符串等：默认开启
+    return true
   } catch {
-    // ignore
+    return true
   }
-  return false
 }
 
 export function saveBgMusicEnabled(enabled: boolean): void {
