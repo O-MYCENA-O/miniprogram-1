@@ -2,65 +2,90 @@
 <navigation-bar title="流程" back="{{false}}" color="#3A3A3A" background="#FAF9F6">
   <button slot="left" class="nav-manage-btn" hover-class="nav-manage-btn--hover" bindtap="goManage">管理</button>
 </navigation-bar>
-<scroll-view class="scrollarea" scroll-y type="list">
-  <view class="flow">
-    <view class="flow-lead flow-lead--offset">
-      <text class="flow-lead__kicker">晨间</text>
-      <text class="flow-lead__title">{{pageTitle}}</text>
-    </view>
 
-    <view class="flow-banner" wx:if="{{flowCompleted}}">
-      <text class="flow-banner__text">今日流程已完成</text>
-      <button class="flow-btn flow-btn--ghost" bindtap="resetFlow">重新开始</button>
-    </view>
+<view wx:if="{{showConfetti}}" class="confetti-root" catchtouchmove="catchTouchMove">
+  <view
+    wx:for="{{confettiPieces}}"
+    wx:key="id"
+    class="confetti-piece"
+    style="left: {{item.left}}%; animation-delay: {{item.delay}}s; animation-duration: {{item.duration}}s; background-color: {{item.color}};"
+  ></view>
+</view>
 
-    <view class="task-list">
-    <block wx:for="{{tasks}}" wx:key="id">
-      <view
-        class="flow-card flow-card--{{item.status}}"
-      >
-        <view class="flow-card__row">
-          <view class="flow-card__titles">
-            <text class="flow-card__title">{{item.title}}</text>
-            <text wx:if="{{item.desc}}" class="flow-card__desc">{{item.desc}}</text>
-          </view>
-          <view wx:if="{{item.status === 'finished'}}" class="flow-card__mark" aria-hidden="true"></view>
-        </view>
-
-        <view wx:if="{{item.status === 'locked'}}" class="flow-card__hint flow-card__hint--locked">未解锁</view>
-
-        <view wx:if="{{item.status === 'active'}}" class="flow-card__actions">
-          <button
-            wx:if="{{item.type === 'default'}}"
-            class="flow-btn"
-            data-id="{{item.id}}"
-            bindtap="onDefaultComplete"
-          >
-            完成
-          </button>
-
-          <button
-            wx:if="{{item.type === 'timer'}}"
-            class="flow-btn"
-            data-id="{{item.id}}"
-            bindtap="onTimerButtonTap"
-            disabled="{{timerTicking && timerTaskId === item.id}}"
-          >
-            <block wx:if="{{timerTicking && timerTaskId === item.id}}">{{timerRemaining}} 秒</block>
-            <block wx:else>开始 {{item.duration}} 秒</block>
-          </button>
-
-          <button
-            wx:if="{{item.type === 'link'}}"
-            class="flow-btn flow-btn--accent-alt"
-            data-id="{{item.id}}"
-            bindtap="onLinkTap"
-          >
-            前往小程序
-          </button>
-        </view>
-      </view>
-    </block>
-    </view>
+<view class="index-shell">
+  <view class="flow-clock" aria-label="当前时间">
+    <text class="flow-clock__date">{{clockDate}}</text>
+    <text class="flow-clock__time">{{clockTime}}</text>
   </view>
-</scroll-view>
+
+  <scroll-view class="scrollarea" scroll-y type="list">
+    <view class="flow">
+      <view class="flow-lead flow-lead--offset">
+        <text class="flow-lead__title">{{pageTitle}}</text>
+      </view>
+
+      <view class="flow-complete-summary" wx:if="{{flowCompleted}}">
+        <text class="flow-complete-summary__title">今日流程已完成</text>
+        <text class="flow-complete-summary__hint">做得很好 · 需要时可从下方重新开始</text>
+      </view>
+
+      <view class="task-list">
+        <block wx:for="{{tasks}}" wx:key="id" wx:for-item="item" wx:for-index="taskIdx">
+          <view class="flow-card flow-card--{{item.status}}">
+            <view class="flow-card__row">
+              <view class="flow-card__titles">
+                <text class="flow-card__title">{{item.title}}</text>
+                <text wx:if="{{item.desc}}" class="flow-card__desc">{{item.desc}}</text>
+              </view>
+              <view wx:if="{{item.status === 'finished'}}" class="flow-card__mark" aria-hidden="true"></view>
+            </view>
+
+            <view wx:if="{{item.status === 'locked'}}" class="flow-card__hint flow-card__hint--locked">未解锁</view>
+
+            <view wx:if="{{item.status === 'active'}}" class="flow-card__actions">
+              <block wx:if="{{startScanEnabled && taskIdx === 0 && !flowCompleted && !firstStepScanUnlocked}}">
+                <button class="flow-btn flow-btn--scan" bindtap="onScanUnlockFirstStep">扫码开启流程</button>
+              </block>
+              <block wx:else>
+                <button
+                  wx:if="{{item.type === 'default'}}"
+                  class="flow-btn"
+                  data-id="{{item.id}}"
+                  bindtap="onDefaultComplete"
+                >
+                  完成
+                </button>
+
+                <button
+                  wx:if="{{item.type === 'timer'}}"
+                  class="flow-btn"
+                  data-id="{{item.id}}"
+                  bindtap="onTimerButtonTap"
+                  disabled="{{timerTicking && timerTaskId === item.id}}"
+                >
+                  <block wx:if="{{timerTicking && timerTaskId === item.id}}">{{timerRemaining}} 秒</block>
+                  <block wx:else>开始 {{item.duration}} 秒</block>
+                </button>
+
+                <button
+                  wx:if="{{item.type === 'link'}}"
+                  class="flow-btn flow-btn--accent-alt"
+                  data-id="{{item.id}}"
+                  bindtap="onLinkTap"
+                >
+                  前往小程序
+                </button>
+              </block>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+  </scroll-view>
+
+  <view wx:if="{{flowCompleted}}" class="flow-complete-dock">
+    <button class="flow-complete-dock__btn" hover-class="flow-complete-dock__btn--hover" bindtap="onResetFlowTap">
+      重新开始
+    </button>
+  </view>
+</view>

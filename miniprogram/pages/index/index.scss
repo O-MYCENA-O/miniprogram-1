@@ -7,23 +7,66 @@ page {
   background: $color-bg-page;
 }
 
+.index-shell {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .scrollarea {
   flex: 1;
   overflow-y: hidden;
 }
 
+.confetti-root {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 500;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  top: -6%;
+  width: 14rpx;
+  height: 22rpx;
+  border-radius: 3rpx;
+  opacity: 0.95;
+  animation-name: confetti-fall;
+  animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+  animation-fill-mode: forwards;
+  box-shadow: 0 2rpx 6rpx rgba(58, 58, 58, 0.12);
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(0, 115vh, 0) rotate(720deg);
+    opacity: 0.25;
+  }
+}
+
 .nav-manage-btn {
-  margin-left: 12rpx;
-  padding: 10rpx 24rpx;
+  margin-left: 30rpx;
+  padding: 8rpx 24rpx;
   font-size: 28rpx;
   font-weight: 600;
   letter-spacing: 0.06em;
   line-height: 1.25;
-  color: $color-text-primary;
-  background: $color-field-soft;
-  border: 1rpx solid #3a3a3a;
-  border-radius: 0;
+  color: #FAF9F6;
+  background: #869D96;
+  border: 1rpx solid #869D96;
+  border-radius: 4rpx;
   box-sizing: border-box;
+  align-self: center;
 }
 
 .nav-manage-btn::after {
@@ -35,25 +78,45 @@ page {
 }
 
 .flow {
-  padding: 48rpx 28rpx 72rpx 44rpx;
+  padding: 28rpx 48rpx 48rpx 44rpx;
+}
+
+.flow-clock {
+  flex-shrink: 0;
+  box-sizing: border-box;
+  padding: 36rpx 48rpx 28rpx 44rpx;
+  margin-bottom: 0;
+  border-bottom: 1rpx solid rgba(58, 58, 58, 0.18);
+  text-align: center;
+}
+
+.flow-clock__date {
+  display: block;
+  font-size: 32rpx;
+  line-height: 1.4;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: $color-text-primary;
+}
+
+.flow-clock__time {
+  display: block;
+  margin-top: 14rpx;
+  font-size: 44rpx;
+  line-height: 1.15;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  color: $color-accent;
 }
 
 .flow-lead {
-  padding-top: 24rpx;
+  padding-top: 15rpx;
   margin-bottom: 48rpx;
 }
 
 .flow-lead--offset {
   padding-right: 120rpx;
-}
-
-.flow-lead__kicker {
-  display: block;
-  font-size: 22rpx;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: $color-text-muted;
-  margin-bottom: 8rpx;
 }
 
 .flow-lead__title {
@@ -63,7 +126,8 @@ page {
   letter-spacing: -0.02em;
   font-weight: 600;
   color: $color-text-primary;
-  margin-bottom: 48rpx;
+  margin-top: 0rpx;
+  margin-bottom: 60rpx;
 }
 
 .task-list {
@@ -74,17 +138,30 @@ page {
   margin-top: 0;
 }
 
-.flow-banner {
+.flow-complete-summary {
   margin-bottom: 28rpx;
-  padding-bottom: 12rpx;
-  border-bottom: 1rpx solid $color-border;
+  padding: 28rpx 26rpx;
+  border: 1rpx solid rgba(58, 58, 58, 0.32);
+  background: $color-bg-card;
+  border-radius: $radius-card;
+  box-sizing: border-box;
 }
 
-.flow-banner__text {
+.flow-complete-summary__title {
   display: block;
-  font-size: 28rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  letter-spacing: 0.02em;
   color: $color-text-primary;
-  margin-bottom: 16rpx;
+}
+
+.flow-complete-summary__hint {
+  display: block;
+  margin-top: 12rpx;
+  font-size: 24rpx;
+  line-height: 1.55;
+  letter-spacing: 0.04em;
+  color: $color-text-muted;
 }
 
 .flow-card {
@@ -221,6 +298,47 @@ page {
   background: $color-accent-alt;
 }
 
+.flow-btn--scan {
+  background: mix($color-accent, $color-bg-page, 78%);
+  color: #fff;
+}
+
 .flow-btn[disabled] {
+  opacity: 0.92;
+}
+
+.flow-complete-dock {
+  flex-shrink: 0;
+  padding: 20rpx 44rpx;
+  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  background: $color-bg-page;
+  border-top: 1rpx solid rgba(58, 58, 58, 0.12);
+  box-shadow: 0 -12rpx 40rpx rgba(58, 58, 58, 0.06);
+  box-sizing: border-box;
+}
+
+.flow-complete-dock__btn {
+  width: 100%;
+  margin: 0;
+  padding: 24rpx 28rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  color: #fff;
+  background: $color-accent;
+  border: 1rpx solid rgba(58, 58, 58, 0.35);
+  border-radius: $radius-card;
+  box-sizing: border-box;
+  transition:
+    opacity $motion-duration $motion-ease,
+    transform $motion-duration $motion-ease;
+}
+
+.flow-complete-dock__btn::after {
+  border: none;
+}
+
+.flow-complete-dock__btn--hover {
   opacity: 0.92;
 }

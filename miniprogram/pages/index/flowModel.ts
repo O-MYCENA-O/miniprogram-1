@@ -71,6 +71,14 @@ export function flowTasksWithInitialStatuses(presets: ReadonlyArray<TaskPreset>)
   }))
 }
 
+/** 全流程已完成时的展示形态（全部 finished） */
+export function flowTasksAllFinished(presets: ReadonlyArray<TaskPreset>): FlowTask[] {
+  return presets.map((preset) => ({
+    ...preset,
+    status: 'finished' as TaskStatus,
+  }))
+}
+
 export function initialTasksFromPresets(): FlowTask[] {
   return flowTasksWithInitialStatuses(FLOW_TASK_PRESETS)
 }

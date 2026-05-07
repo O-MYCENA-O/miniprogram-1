@@ -2,28 +2,12 @@
   <navigation-bar title="任务" back="{{true}}" color="#3A3A3A" background="#FAF9F6"></navigation-bar>
 
   <view class="manage-body {{editorOpen ? 'manage-body--locked' : ''}}">
-    <scroll-view class="manage-scroll" scroll-y="{{!editorOpen}}" type="list">
+    <scroll-view class="manage-scroll" scroll-y="{{!editorOpen && !dragging}}" type="list">
       <view class="manage pad-asymmetric">
-        <view class="flow-settings">
-          <text class="flow-settings__label">流程名称设置</text>
-          <text class="flow-settings__hint">将同步至首页主标题</text>
-          <view class="flow-settings__row">
-            <input
-              class="flow-settings__input"
-              value="{{flowPageTitle}}"
-              placeholder="例如：线性任务流"
-              bindinput="onFlowTitleInput"
-            />
-            <button class="flow-settings__save" hover-class="flow-settings__save--hover" bindtap="onSaveFlowTitle">
-              保存
-            </button>
-          </view>
-        </view>
-
         <view class="settings-block">
           <text class="settings-block__title">设置</text>
           <view class="settings-block__row">
-            <text class="settings-block__label">开启震动反馈</text>
+            <text class="settings-block__label">开启振动反馈</text>
             <switch
               class="settings-block__switch"
               checked="{{configVibrate}}"
@@ -33,23 +17,81 @@
           </view>
         </view>
 
+        <view class="flow-settings">
+          <text class="flow-settings__label">流程名称设置</text>
+          <text class="flow-settings__hint">将同步至首页主标题</text>
+          <view class="flow-settings__row">
+            <input
+              class="flow-settings__input"
+              value="{{flowPageTitle}}"
+              placeholder="例如：线性任务流"
+              data-field="flowPageTitle"
+              bindinput="onFormInput"
+            />
+            <button class="flow-settings__save" hover-class="flow-settings__save--hover" bindtap="onSaveFlowTitle">
+              保存
+            </button>
+          </view>
+        </view>
+
+        <view class="scan-settings {{flowScanEnabled ? 'scan-settings--active' : ''}}">
+          <text class="flow-settings__label">流程开启方式</text>
+          <text class="flow-settings__hint">开启后，首页第一项须扫码验证；口令请在本页扫码录入（与二维码内容一致），未录入则任意有效扫码均可开启</text>
+          <view class="settings-block__row scan-settings__switch-row">
+            <text class="settings-block__label">扫码开启流程</text>
+            <switch
+              class="settings-block__switch"
+              checked="{{flowScanEnabled}}"
+              color="#869D96"
+              bindchange="onFlowScanSwitch"
+            />
+          </view>
+          <block wx:if="{{flowScanEnabled}}">
+            <text class="scan-settings__token-label">二维码口令（仅支持扫码录入）</text>
+            <view class="scan-settings__token-preview {{flowScanToken ? '' : 'scan-settings__token-preview--empty'}}">
+              <text class="scan-settings__token-preview__txt">{{flowScanTokenPreview}}</text>
+            </view>
+            <button class="scan-settings__scan-btn" hover-class="scan-settings__scan-btn--hover" bindtap="onScanTokenIn">
+              扫码录入口令
+            </button>
+            <text wx:if="{{flowScanToken}}" class="scan-settings__clear-link" bindtap="onClearScanToken">清除口令</text>
+          </block>
+        </view>
+
         <button class="manage-add" bindtap="onAddTap">添加任务</button>
 
-        <block wx:for="{{taskList}}" wx:key="id">
-          <view class="manage-card">
-            <view class="manage-card__main">
-              <text class="manage-card__title">{{item.title}}</text>
-              <text class="manage-card__desc" wx:if="{{item.desc}}">{{item.desc}}</text>
-              <text class="manage-card__meta">
-                {{item.type === 'default' ? 'Standard' : (item.type === 'timer' ? 'Timer' : 'MiniProgram')}}
-              </text>
+        <text class="manage-list-hint">首项为开启任务，顺序固定 · 其余长按拖动排序 · 点击编辑或删除</text>
+
+        <view class="manage-task-list">
+          <block wx:for="{{taskList}}" wx:key="id">
+            <view class="manage-task-row">
+              <view
+                class="manage-card-hit {{dragging && draggingId === item.id ? 'manage-card-hit--ghost' : ''}}"
+                data-index="{{index}}"
+                data-id="{{item.id}}"
+                bindtouchstart="onTileTouchStart"
+                bindtouchmove="onTileTouchMove"
+                bindtouchend="onTileTouchEnd"
+                bindtouchcancel="onTileTouchEnd"
+              >
+                <view class="manage-card">
+                  <text wx:if="{{index === 0 && flowScanEnabled}}" class="manage-card__badge">扫码</text>
+                  <view class="manage-card__main">
+                    <text class="manage-card__title">{{item.title}}</text>
+                    <text wx:if="{{item.desc}}" class="manage-card__desc">{{item.desc}}</text>
+                    <text class="manage-card__meta">
+                      {{item.type === 'default' ? 'Standard' : (item.type === 'timer' ? 'Timer' : 'MiniProgram')}}
+                    </text>
+                  </view>
+                  <view class="manage-card__tools" catchtouchstart="noopStop">
+                    <text class="manage-icon manage-icon--edit" data-id="{{item.id}}" catchtap="onEditTap">编辑</text>
+                    <text class="manage-icon manage-icon--del" data-id="{{item.id}}" catchtap="onDeleteTap">删除</text>
+                  </view>
+                </view>
+              </view>
             </view>
-            <view class="manage-card__tools">
-              <text class="manage-icon manage-icon--edit" data-id="{{item.id}}" bindtap="onEditTap">编辑</text>
-              <text class="manage-icon manage-icon--del" data-id="{{item.id}}" bindtap="onDeleteTap">删除</text>
-            </view>
-          </view>
-        </block>
+          </block>
+        </view>
 
         <view wx:if="{{taskList.length === 0}}" class="manage-empty">暂无任务，请点击上方添加。</view>
       </view>
@@ -60,12 +102,12 @@
   <block wx:if="{{editorOpen}}">
     <view
       class="sheet-mask"
-      bindtap="onMaskClose"
-      catchtouchmove="preventTouchMove"
+      bindtap="closeEditor"
+      catchtouchmove="catchTouchMove"
       aria-role="button"
       aria-label="关闭"
     ></view>
-    <view class="sheet-panel--centered" catchtap="preventBubble">
+    <view class="sheet-panel--centered" catchtap="catchTap">
 
       <block wx:if="{{editorPhase === 1}}">
         <text class="sheet-title">选择类型</text>
@@ -86,11 +128,11 @@
 
         <view class="field">
           <text class="field-label">标题</text>
-          <input class="field-input" value="{{formTitle}}" placeholder="必填" bindinput="onTitleInput" />
+          <input class="field-input" value="{{formTitle}}" placeholder="必填" data-field="formTitle" bindinput="onFormInput" />
         </view>
         <view class="field">
           <text class="field-label">描述</text>
-          <input class="field-input" value="{{formDesc}}" placeholder="可选" bindinput="onDescInput" />
+          <input class="field-input" value="{{formDesc}}" placeholder="可选" data-field="formDesc" bindinput="onFormInput" />
         </view>
 
         <block wx:if="{{editorKind === 'Timer'}}">
@@ -101,7 +143,8 @@
               type="number"
               value="{{formDuration}}"
               placeholder="如 60"
-              bindinput="onDurationInput"
+              data-field="formDuration"
+              bindinput="onFormInput"
             />
           </view>
         </block>
@@ -113,7 +156,8 @@
               class="field-input"
               value="{{formAppId}}"
               placeholder="如 wx1234567890abcdef"
-              bindinput="onAppIdInput"
+              data-field="formAppId"
+              bindinput="onFormInput"
             />
           </view>
           <view class="field">
@@ -122,16 +166,30 @@
               class="field-input"
               value="{{formPath}}"
               placeholder="如 pages/index/index"
-              bindinput="onPathInput"
+              data-field="formPath"
+              bindinput="onFormInput"
             />
           </view>
         </block>
 
         <view class="sheet-actions">
-          <button class="sheet-btn sheet-btn--ghost" bindtap="onCancelEditor">取消</button>
+          <button class="sheet-btn sheet-btn--ghost" bindtap="closeEditor">取消</button>
           <button class="sheet-btn sheet-btn--primary" bindtap="onSaveEditor">保存</button>
         </view>
       </block>
     </view>
   </block>
+
+  <view wx:if="{{dragging}}" class="manage-drag-layer" aria-hidden="true">
+    <view class="manage-drag-float" style="left: {{dragFloatX}}px; top: {{dragFloatY}}px;">
+      <view class="manage-card manage-card--floating">
+        <view class="manage-card__main">
+          <text class="manage-card__title">{{draggingTitle}}</text>
+          <text class="manage-card__meta">
+            {{draggingType === 'default' ? 'Standard' : (draggingType === 'timer' ? 'Timer' : 'MiniProgram')}}
+          </text>
+        </view>
+      </view>
+    </view>
+  </view>
 </view>

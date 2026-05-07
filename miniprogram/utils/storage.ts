@@ -87,7 +87,11 @@ function normalizeTaskList(list: unknown): TaskPreset[] {
 
 function readRawPayload(): unknown {
   try {
-    return wx.getStorageSync(STORAGE_KEY) as unknown
+    const payload = wx.getStorageSync(STORAGE_KEY) as unknown
+    if (payload != null && payload !== '') {
+      return payload
+    }
+    return wx.getStorageSync('morning_tasks') as unknown
   } catch {
     return undefined
   }
@@ -133,9 +137,79 @@ export function saveTaskPresets(tasks: TaskPreset[]): void {
   }
   try {
     wx.setStorageSync(STORAGE_KEY, payload)
+    clearFirstStepScanOk()
   } catch (e) {
     console.error('saveTaskPresets failed', e)
     wx.showToast({ title: '保存失败', icon: 'none' })
+  }
+}
+
+/** 首页第一项：须扫码验证后方可操作（管理页配置） */
+export const FLOW_START_SCAN_KEY = 'morning_routine_flow_start_scan_v1'
+
+/** 当日/本轮已通过第一项扫码验证（任务列表或扫码设置变更时清除） */
+export const FIRST_STEP_SCAN_OK_KEY = 'morning_routine_first_step_scan_ok_v1'
+
+export interface FlowStartScanConfig {
+  enabled: boolean
+  token: string
+}
+
+export function readFlowStartScanConfig(): FlowStartScanConfig {
+  try {
+    const v = wx.getStorageSync(FLOW_START_SCAN_KEY) as unknown
+    if (v && typeof v === 'object' && !Array.isArray(v)) {
+      const o = v as Record<string, unknown>
+      return {
+        enabled: o.enabled === true,
+        token: typeof o.token === 'string' ? o.token.trim() : '',
+      }
+    }
+  } catch {
+    // ignore
+  }
+  return { enabled: false, token: '' }
+}
+
+export function saveFlowStartScanConfig(cfg: FlowStartScanConfig): void {
+  const payload = {
+    enabled: !!cfg.enabled,
+    token: typeof cfg.token === 'string' ? cfg.token.trim() : '',
+  }
+  try {
+    wx.setStorageSync(FLOW_START_SCAN_KEY, payload)
+    clearFirstStepScanOk()
+  } catch (e) {
+    console.error('saveFlowStartScanConfig failed', e)
+    wx.showToast({ title: '扫码设置保存失败', icon: 'none' })
+  }
+}
+
+export function readFirstStepScanOk(): boolean {
+  try {
+    return wx.getStorageSync(FIRST_STEP_SCAN_OK_KEY) === true
+  } catch {
+    return false
+  }
+}
+
+export function saveFirstStepScanOk(): void {
+  try {
+    wx.setStorageSync(FIRST_STEP_SCAN_OK_KEY, true)
+  } catch (e) {
+    console.error('saveFirstStepScanOk failed', e)
+  }
+}
+
+export function clearFirstStepScanOk(): void {
+  try {
+    wx.removeStorageSync(FIRST_STEP_SCAN_OK_KEY)
+  } catch {
+    try {
+      wx.setStorageSync(FIRST_STEP_SCAN_OK_KEY, false)
+    } catch {
+      // ignore
+    }
   }
 }
 
@@ -171,6 +245,42 @@ export function savePageTitle(title: string): void {
   } catch (e) {
     console.error('savePageTitle failed', e)
     wx.showToast({ title: '标题保存失败', icon: 'none' })
+  }
+}
+
+/**
+ * 当前「每日 5:00」周期内已完成全流程：值为该周期起始时间戳（与首页 getLast5AM 对齐）。
+ * 直至下一周期 5:00 前保持完成态，除非用户手动重置。
+ */
+export const FLOW_COMPLETED_PERIOD_KEY = 'morning_routine_flow_completed_period_v1'
+
+export function readFlowCompletedPeriod(): number {
+  try {
+    const v = wx.getStorageSync(FLOW_COMPLETED_PERIOD_KEY) as unknown
+    const n = typeof v === 'number' ? v : Number(v)
+    return Number.isFinite(n) && n > 0 ? n : 0
+  } catch {
+    return 0
+  }
+}
+
+export function saveFlowCompletedPeriod(boundaryTimestamp: number): void {
+  try {
+    wx.setStorageSync(FLOW_COMPLETED_PERIOD_KEY, boundaryTimestamp)
+  } catch (e) {
+    console.error('saveFlowCompletedPeriod failed', e)
+  }
+}
+
+export function clearFlowCompletedPeriod(): void {
+  try {
+    wx.removeStorageSync(FLOW_COMPLETED_PERIOD_KEY)
+  } catch {
+    try {
+      wx.setStorageSync(FLOW_COMPLETED_PERIOD_KEY, 0)
+    } catch {
+      // ignore
+    }
   }
 }
 
