@@ -1,4 +1,5 @@
 import type { TaskPreset, TaskType } from '../index/flowModel'
+import { syncBgMusicPlayback } from '../../utils/bgm'
 import {
   createTaskId,
   readBgMusicEnabled,
@@ -335,7 +336,8 @@ Page({
     const enabled = !!e.detail.value
     saveBgMusicEnabled(enabled)
     this.setData({ configBgMusic: enabled })
-    wx.showToast({ title: enabled ? '返回首页后将播放' : '已关闭背景音乐', icon: 'none', duration: 900 })
+    syncBgMusicPlayback()
+    wx.showToast({ title: enabled ? '已开始播放' : '已停止背景音乐', icon: 'none', duration: 900 })
   },
 
   syncFlowTitleDraft() {

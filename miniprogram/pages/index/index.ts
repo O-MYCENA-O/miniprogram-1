@@ -8,7 +8,6 @@ import {
   DEFAULT_PAGE_TITLE,
   clearFirstStepScanOk,
   clearFlowCompletedPeriod,
-  readBgMusicEnabled,
   readFirstStepScanOk,
   readFlowCompletedPeriod,
   readFlowStartScanConfig,
@@ -17,6 +16,7 @@ import {
   saveFirstStepScanOk,
   saveFlowCompletedPeriod,
 } from '../../utils/storage'
+import { syncBgMusicPlayback } from '../../utils/bgm'
 import { triggerVibrate } from '../../utils/vibrate'
 
 type TimerHandle = ReturnType<typeof setInterval>
@@ -49,42 +49,6 @@ function getLast5AM(timestamp: number): number {
   const date = new Date(timestamp)
   const today5 = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 5, 0, 0, 0).getTime()
   return timestamp >= today5 ? today5 : today5 - 24 * 60 * 60 * 1000
-}
-
-/** CDN 背景音乐路径；音频文件已上传到腾讯云 COS */
-const BGM_TRACK_POOL = [
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm1.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm2.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm3.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm4.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm5.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm6.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm7.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm8.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm9.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm10.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm11.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm12.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm13.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm14.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm15.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm16.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm17.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm18.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm19.MP3',
-]
-
-function pickRandomBgmSrc(exclude?: string): string {
-  const pool = BGM_TRACK_POOL
-  if (pool.length === 0) return 'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm1.MP3'
-  if (pool.length === 1) return pool[0]!
-  let pick = pool[Math.floor(Math.random() * pool.length)]!
-  let tries = 0
-  while (exclude && pick === exclude && tries < 12) {
-    pick = pool[Math.floor(Math.random() * pool.length)]!
-    tries += 1
-  }
-  return pick
 }
 
 function scanResultMatches(expectedToken: string, rawResult: string): boolean {
@@ -120,14 +84,12 @@ Page({
   _timerHandle: null as TimerHandle | null,
   _clockHandle: null as ClockHandle | null,
   _confettiTimer: null as ConfettiTimerHandle | null,
-  _bgm: null as WechatMiniprogram.InnerAudioContext | null,
 
   onLoad() {
     this.tickClock()
     this.syncPageTitleFromStorage()
     this.syncTasksFromStorage()
     this.startClock()
-    this.ensureBgmContext()
   },
 
   onShow() {
@@ -135,70 +97,16 @@ Page({
     this.syncPageTitleFromStorage()
     this.syncTasksFromStorage()
     this.startClock()
-    this.syncBgMusicPlayback()
+    syncBgMusicPlayback()
   },
 
   onHide() {
     this.stopClock()
-    //this.pauseBgMusic()
   },
 
   /** 捕获阶段：任意触摸后再次 play，满足真机「须用户手势」音频策略 */
   onShellCaptureTap() {
-    this.syncBgMusicPlayback()
-  },
-
-  ensureBgmContext() {
-    if (this._bgm) return
-    const ctx = wx.createInnerAudioContext()
-    ctx.loop = BGM_TRACK_POOL.length <= 1
-    ctx.volume = 0.4
-    ctx.obeyMuteSwitch = true
-    if (!ctx.loop) {
-      ctx.onEnded(() => {
-        if (!readBgMusicEnabled() || !this._bgm) return
-        const prev = this._bgm.src || ''
-        const next = pickRandomBgmSrc(prev)
-        this._bgm.src = next
-        try {
-          this._bgm.play()
-        } catch (e) {
-          console.warn('[bgm] next track play failed', e)
-        }
-      })
-    }
-    ctx.onError((err) => {
-      console.warn('[bgm] play error', err)
-    })
-    this._bgm = ctx
-  },
-
-  syncBgMusicPlayback() {
-    if (!readBgMusicEnabled()) {
-      this.pauseBgMusic()
-      return
-    }
-    this.ensureBgmContext()
-    const ctx = this._bgm
-    if (!ctx) return
-    try {
-      if (!ctx.src) {
-        ctx.src = pickRandomBgmSrc()
-      }
-      ctx.play()
-    } catch (e) {
-      console.warn('[bgm] play failed', e)
-    }
-  },
-
-  pauseBgMusic() {
-    if (this._bgm) {
-      try {
-        this._bgm.pause()
-      } catch {
-        // ignore
-      }
-    }
+    syncBgMusicPlayback()
   },
 
   tickClock() {
@@ -319,15 +227,6 @@ Page({
     if (this._confettiTimer !== null) {
       clearTimeout(this._confettiTimer)
       this._confettiTimer = null
-    }
-    if (this._bgm) {
-      try {
-        this._bgm.stop()
-        this._bgm.destroy()
-      } catch {
-        // ignore
-      }
-      this._bgm = null
     }
   },
 

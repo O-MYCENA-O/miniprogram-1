@@ -24,7 +24,7 @@
               bindchange="onBgMusicSwitchChange"
             />
           </view>
-          <text class="settings-block__hint">随机播放早安Jazz Playlist；设置后回到首页生效</text>
+          <text class="settings-block__hint">随机播放早安 Jazz Playlist；离开小程序后仍可后台播放</text>
         </view>
 
         <view class="flow-settings">
@@ -170,6 +170,7 @@
               bindinput="onFormInput"
             />
           </view>
+          <!--
           <view class="field">
             <text class="field-label">页面路径</text>
             <input
@@ -180,6 +181,7 @@
               bindinput="onFormInput"
             />
           </view>
+          -->
         </block>
 
         <view class="sheet-actions">
