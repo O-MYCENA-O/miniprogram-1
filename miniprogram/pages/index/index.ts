@@ -2,6 +2,7 @@ import {
   applyTaskCompletion,
   flowTasksAllFinished,
   flowTasksWithInitialStatuses,
+  FlowTask,
 } from './flowModel'
 import {
   DEFAULT_PAGE_TITLE,
