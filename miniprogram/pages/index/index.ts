@@ -50,32 +50,32 @@ function getLast5AM(timestamp: number): number {
   return timestamp >= today5 ? today5 : today5 - 24 * 60 * 60 * 1000
 }
 
-/** CDN 背景音乐路径；音频文件已上传到腾讯云 COS */
+/** CDN 背景音乐路径；音频文件已上传到GitHub；使用jsDelivr + Github搭建CDN */
 const BGM_TRACK_POOL = [
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm1.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm2.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm3.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm4.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm5.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm6.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm7.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm8.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm9.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm10.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm11.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm12.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm13.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm14.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm15.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm16.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm17.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm18.MP3',
-  'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm19.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm1.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm2.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm3.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm4.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm5.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm6.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm7.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm8.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm9.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm10.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm11.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm12.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm13.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm14.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm15.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm16.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm17.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm18.MP3',
+  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm19.MP3',
 ]
 
 function pickRandomBgmSrc(exclude?: string): string {
   const pool = BGM_TRACK_POOL
-  if (pool.length === 0) return 'https://mnrt-1429431110.cos.ap-beijing.myqcloud.com/bgm1.MP3'
+  if (pool.length === 0) return 'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm1.MP3'
   if (pool.length === 1) return pool[0]!
   let pick = pool[Math.floor(Math.random() * pool.length)]!
   let tries = 0
