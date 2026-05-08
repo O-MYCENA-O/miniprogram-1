@@ -1,7 +1,14 @@
 <!-- 线性流程：卡片状态由 item.status 驱动，交互绑定 dataset.id -->
-<navigation-bar title="流程" back="{{false}}" color="#3A3A3A" background="#FAF9F6">
-  <button slot="left" class="nav-manage-btn" hover-class="nav-manage-btn--hover" bindtap="goManage">管理</button>
-</navigation-bar>
+<!-- 导航 + 时钟同一固定顶栏，滚动时整块不位移 -->
+<view class="index-header-fixed">
+  <navigation-bar title="流程" back="{{false}}" color="#3A3A3A" background="#FAF9F6">
+    <button slot="left" class="nav-manage-btn" hover-class="nav-manage-btn--hover" bindtap="goManage">管理</button>
+  </navigation-bar>
+  <view class="flow-clock" aria-label="当前时间">
+    <text class="flow-clock__date">{{clockDate}}</text>
+    <text class="flow-clock__time">{{clockTime}}</text>
+  </view>
+</view>
 
 <view wx:if="{{showConfetti}}" class="confetti-root" catchtouchmove="catchTouchMove">
   <view
@@ -12,12 +19,7 @@
   ></view>
 </view>
 
-<view class="index-shell" capture-bindtap="onShellCaptureTap">
-  <view class="flow-clock" aria-label="当前时间">
-    <text class="flow-clock__date">{{clockDate}}</text>
-    <text class="flow-clock__time">{{clockTime}}</text>
-  </view>
-
+<view class="index-shell {{flowCompleted ? 'index-shell--flow-done' : ''}}" capture-bindtap="onShellCaptureTap">
   <scroll-view class="scrollarea" scroll-y type="list">
     <view class="flow">
       <view class="flow-lead flow-lead--offset">
@@ -75,6 +77,15 @@
                 >
                   前往小程序
                 </button>
+
+                <button
+                  wx:if="{{item.type === 'scan'}}"
+                  class="flow-btn"
+                  data-id="{{item.id}}"
+                  bindtap="onScanTaskTap"
+                >
+                  完成
+                </button>
               </block>
             </view>
           </view>
@@ -83,9 +94,11 @@
     </view>
   </scroll-view>
 
-  <view wx:if="{{flowCompleted}}" class="flow-complete-dock">
-    <button class="flow-complete-dock__btn" hover-class="flow-complete-dock__btn--hover" bindtap="onResetFlowTap">
-      重新开始
-    </button>
+  <view wx:if="{{flowCompleted}}" class="flow-complete-dock-wrap">
+    <view class="flow-complete-dock">
+      <button class="flow-complete-dock__btn" hover-class="flow-complete-dock__btn--hover" bindtap="onResetFlowTap">
+        重新开始
+      </button>
+    </view>
   </view>
 </view>

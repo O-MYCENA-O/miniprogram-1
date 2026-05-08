@@ -10,7 +10,7 @@ $z-panel: 101;
 
 page {
   height: 100vh;
-  padding-top: 100rpx;
+  //padding-top: 100rpx;
   display: flex;
   flex-direction: column;
   background: $bg;
@@ -281,6 +281,8 @@ page {
   flex: 1;
   min-width: 0;
   align-self: stretch;
+  display: flex;
+  flex-direction: column;
 }
 
 .manage-card-hit--ghost {
@@ -310,7 +312,7 @@ page {
   gap: 20rpx;
   padding: 28rpx 26rpx;
   margin: 0;
-  min-height: 180rpx;
+  min-height: 200rpx;
   width: 100%;
   box-sizing: border-box;
   border: 1rpx solid rgba(58, 58, 58, 0.32);
@@ -343,10 +345,15 @@ page {
 }
 
 .manage-card__meta {
-  display: block;
   margin-top: auto;
+  flex-shrink: 0;
+  display: flex;
+  align-items: flex-end;
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 28rpx;
   font-size: 22rpx;
-  line-height: 1;
+  line-height: 28rpx;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: $mute;
@@ -575,3 +582,24 @@ textarea {
   background: $mute;
   color: $bg;
 }
+
+/* =============================================================================
+ * LAYOUT DEBUG — 临时分区染色（已注释，需要时取消注释）
+ * =============================================================================
+ *
+ * page { background: #93c5fd !important; }
+ * .manage-page { background: #fef08a !important; }
+ * .manage-page .weui-navigation-bar__inner { background: #f472b6 !important; }
+ * .manage-body { background: #86efac !important; }
+ * .manage-scroll { background: #fca5a5 !important; }
+ * .pad-asymmetric { background: #e9d5ff !important; }
+ * .settings-block { background: #67e8f9 !important; }
+ * .flow-settings { background: #fcd34d !important; }
+ * .scan-settings { background: #f5d0fe !important; }
+ * .manage-task-list { background: #d9f99d !important; }
+ * .manage-card { background: #ffffff !important; outline: 2rpx solid #db2777; }
+ * .sheet-mask { background: rgba(239, 68, 68, 0.35) !important; }
+ * .sheet-panel--centered { background: #fde68a !important; outline: 2rpx solid #ea580c; }
+ * .manage-drag-layer .manage-card--floating { outline: 2rpx solid #059669; }
+ *
+ * ============================================================================= */

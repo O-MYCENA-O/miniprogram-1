@@ -8,6 +8,7 @@ import {
   DEFAULT_PAGE_TITLE,
   clearFirstStepScanOk,
   clearFlowCompletedPeriod,
+  readConfigVibrate,
   readFirstStepScanOk,
   readFlowCompletedPeriod,
   readFlowStartScanConfig,
@@ -292,7 +293,9 @@ Page({
     }
 
     this.clearCountdown()
-    triggerVibrate({ type: 'medium' })
+    if (task.type !== 'scan') {
+      triggerVibrate({ type: 'medium' })
+    }
 
     if (result.flowCompleted) {
       saveFlowCompletedPeriod(getLast5AM(Date.now()))
@@ -348,6 +351,49 @@ Page({
     const id = String(e.currentTarget.dataset.id || '')
     if (!id) return
     this.handleComplete(id)
+  },
+
+  /** scan：与「扫码开启流程」同一套校验（无口令则任意有效扫码均可） */
+  onScanTaskTap(e: WechatMiniprogram.TouchEvent) {
+    const id = String(e.currentTarget.dataset.id || '')
+    if (!id) return
+
+    const task = this.data.tasks.find((t) => t.id === id)
+    if (!task || task.type !== 'scan' || task.status !== 'active') return
+
+    const ai = this.data.tasks.findIndex((t) => t.status === 'active')
+    if (
+      this.data.startScanEnabled &&
+      ai === 0 &&
+      !this.data.flowCompleted &&
+      !this.data.firstStepScanUnlocked
+    ) {
+      return
+    }
+
+    const token = task.verifyCode ?? ''
+
+    wx.scanCode({
+      onlyFromCamera: true,
+      scanType: ['qrCode', 'barCode'],
+      success: (res) => {
+        const raw = typeof res?.result === 'string' ? res.result : ''
+        if (!scanResultMatches(token, raw)) {
+          wx.showToast({ title: '与校验码不一致', icon: 'none', duration: 1600 })
+          return
+        }
+        if (readConfigVibrate()) {
+          wx.vibrateShort({ type: 'light' })
+        }
+        wx.showToast({ title: '任务已完成', icon: 'success', duration: 900 })
+        this.handleComplete(id)
+      },
+      fail: (err) => {
+        const msg = err && err.errMsg ? String(err.errMsg) : ''
+        if (msg.indexOf('cancel') !== -1 || msg.indexOf('取消') !== -1) return
+        wx.showToast({ title: '扫码失败', icon: 'none' })
+      },
+    })
   },
 
   /** timer：首次点击开始倒计时，按钮文案同步剩余秒数；结束后自动完成 */

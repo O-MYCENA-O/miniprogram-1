@@ -14,3 +14,9 @@ page {
 .log-item:last-child {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
+/* LAYOUT DEBUG — 已注释（需要时恢复为正式规则）
+ * page { background: #a5b4fc !important; }
+ * .scrollarea { background: #fde68a !important; }
+ * .log-item { background: #fbcfe8 !important; }
+ */

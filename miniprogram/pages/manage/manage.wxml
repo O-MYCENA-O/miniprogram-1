@@ -89,9 +89,9 @@
                   <view class="manage-card__main">
                     <text class="manage-card__title">{{item.title}}</text>
                     <text wx:if="{{item.desc}}" class="manage-card__desc">{{item.desc}}</text>
-                    <text class="manage-card__meta">
-                      {{item.type === 'default' ? 'Standard' : (item.type === 'timer' ? 'Timer' : 'MiniProgram')}}
-                    </text>
+                    <view class="manage-card__meta">
+                      {{item.type === 'scan' ? 'SCAN' : (item.type === 'default' ? 'Standard' : (item.type === 'timer' ? 'Timer' : 'MiniProgram'))}}
+                    </view>
                   </view>
                 </view>
                 <view class="manage-card__tools">
@@ -126,6 +126,7 @@
           <view class="type-tile" data-kind="Standard" bindtap="onPickKind">Standard</view>
           <view class="type-tile" data-kind="Timer" bindtap="onPickKind">Timer</view>
           <view class="type-tile" data-kind="MiniProgram" bindtap="onPickKind">MiniProgram</view>
+          <view class="type-tile" data-kind="Scan" bindtap="onPickKind">Scan</view>
         </view>
       </block>
 
@@ -134,7 +135,7 @@
           <text class="sheet-title">配置任务</text>
           <text class="sheet-link" bindtap="onRepickKind">重选类型</text>
         </view>
-        <text class="sheet-kind">当前：{{editorKind}}</text>
+        <text class="sheet-kind">当前：{{editorKind === 'Scan' ? 'SCAN' : editorKind}}</text>
 
         <view class="field">
           <text class="field-label">标题</text>
@@ -184,6 +185,19 @@
           -->
         </block>
 
+        <block wx:if="{{editorKind === 'Scan'}}">
+          <view class="field">
+            <text class="field-label">校验口令（可选）</text>
+            <input
+              class="field-input"
+              value="{{formVerifyCode}}"
+              placeholder="留空则任意有效扫码均可；填写须与二维码内容一致"
+              data-field="formVerifyCode"
+              bindinput="onFormInput"
+            />
+          </view>
+        </block>
+
         <view class="sheet-actions">
           <button class="sheet-btn sheet-btn--ghost" bindtap="closeEditor">取消</button>
           <button class="sheet-btn sheet-btn--primary" bindtap="onSaveEditor">保存</button>
@@ -197,9 +211,9 @@
       <view class="manage-card manage-card--floating">
         <view class="manage-card__main">
           <text class="manage-card__title">{{draggingTitle}}</text>
-          <text class="manage-card__meta">
-            {{draggingType === 'default' ? 'Standard' : (draggingType === 'timer' ? 'Timer' : 'MiniProgram')}}
-          </text>
+          <view class="manage-card__meta">
+            {{draggingType === 'scan' ? 'SCAN' : (draggingType === 'default' ? 'Standard' : (draggingType === 'timer' ? 'Timer' : 'MiniProgram'))}}
+          </view>
         </view>
       </view>
     </view>

@@ -2,7 +2,7 @@
  * 线性流程任务模型与纯函数 —— 与页面/UI 解耦，便于扩展任务项。
  */
 
-export type TaskType = 'default' | 'timer' | 'link'
+export type TaskType = 'default' | 'timer' | 'link' | 'scan'
 
 export type TaskStatus = 'locked' | 'active' | 'finished'
 
@@ -18,6 +18,8 @@ export interface FlowTask {
   linkAppId?: string
   /** link：打开路径 */
   linkPath?: string
+  /** scan：可选；留空则任意有效扫码均可完成（规则与「扫码开启流程」一致） */
+  verifyCode?: string
 }
 
 /** 持久化 / 配置形态（不含运行时 status） */

@@ -14,17 +14,19 @@ import {
   saveTaskPresets,
 } from '../../utils/storage'
 
-type EditorKind = 'Standard' | 'Timer' | 'MiniProgram' | ''
+type EditorKind = 'Standard' | 'Timer' | 'MiniProgram' | 'Scan' | ''
 
 function kindToTaskType(kind: EditorKind): TaskType {
   if (kind === 'Timer') return 'timer'
   if (kind === 'MiniProgram') return 'link'
+  if (kind === 'Scan') return 'scan'
   return 'default'
 }
 
 function taskTypeToKind(type: TaskType): EditorKind {
   if (type === 'timer') return 'Timer'
   if (type === 'link') return 'MiniProgram'
+  if (type === 'scan') return 'Scan'
   return 'Standard'
 }
 
@@ -81,6 +83,7 @@ Page({
     formDuration: '10',
     formAppId: '',
     formPath: '',
+    formVerifyCode: '',
     editingId: '',
     flowScanEnabled: false,
     flowScanToken: '',
@@ -375,6 +378,7 @@ Page({
       formDuration: '10',
       formAppId: '',
       formPath: '',
+      formVerifyCode: '',
       editingId: '',
     })
   },
@@ -395,6 +399,7 @@ Page({
       formDuration: String(Math.max(1, task.duration || 10)),
       formAppId: task.linkAppId || '',
       formPath: task.linkPath || '',
+      formVerifyCode: task.verifyCode || '',
       editingId: task.id,
     })
   },
@@ -482,6 +487,10 @@ Page({
       const path = this.data.formPath.trim()
       preset.linkAppId = appId || 'wx0000000000000000'
       preset.linkPath = path || 'pages/index/index'
+    }
+
+    if (type === 'scan') {
+      preset.verifyCode = this.data.formVerifyCode.trim()
     }
 
     let nextList: TaskPreset[]

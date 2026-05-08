@@ -32,9 +32,12 @@
   padding-left: var(--left);
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  /** 与标题区同一垂直偏移，返回键与「任务」等字对齐 */
+  align-items: center;
+  align-self: center;
   height: 100%;
   box-sizing: border-box;
+  margin-top: 30rpx;
 }
 
 .weui-navigation-bar__btn_goback_wrapper {
@@ -68,6 +71,9 @@
   font-weight: bold;
   flex: 1;
   height: 100%;
+  align-self: center;
+  margin-top: 30rpx;
+  box-sizing: border-box;
 }
 
 .weui-navigation-bar__loading {

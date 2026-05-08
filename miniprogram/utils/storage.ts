@@ -26,7 +26,7 @@ function presetById(id: string): TaskPreset | undefined {
 }
 
 function isTaskType(value: unknown): value is TaskType {
-  return value === 'default' || value === 'timer' || value === 'link'
+  return value === 'default' || value === 'timer' || value === 'link' || value === 'scan'
 }
 
 function coerceNumber(value: unknown, fallback: number): number {
@@ -45,7 +45,13 @@ export function normalizeTaskPreset(raw: unknown): TaskPreset | null {
 
   const fallback = presetById(id)
   const titleIn = typeof o.title === 'string' ? o.title.trim() : ''
-  const descIn = typeof o.desc === 'string' ? o.desc.trim() : ''
+  /** 存盘可为 ""（保留空说明）；仅缺失字段时合并内置预设，兼容旧缓存 */
+  const descIn =
+    typeof o.desc === 'string'
+      ? o.desc.trim()
+      : fallback != null
+        ? fallback.desc
+        : ''
   const typeIn = isTaskType(o.type) ? o.type : undefined
 
   const baseType: TaskType = typeIn != null ? typeIn : fallback != null ? fallback.type : 'default'
@@ -54,7 +60,7 @@ export function normalizeTaskPreset(raw: unknown): TaskPreset | null {
   const merged: TaskPreset = {
     id,
     title: titleIn || (fallback != null ? fallback.title : '') || '未命名任务',
-    desc: descIn || (fallback != null ? fallback.desc : ''),
+    desc: descIn,
     type: baseType,
     duration: baseType === 'timer' ? Math.max(1, Math.floor(baseDuration || 10)) : 0,
     linkAppId:
@@ -69,11 +75,21 @@ export function normalizeTaskPreset(raw: unknown): TaskPreset | null {
         : fallback != null
           ? fallback.linkPath
           : undefined,
+    verifyCode:
+      typeof o.verifyCode === 'string'
+        ? o.verifyCode.trim()
+        : fallback != null
+          ? fallback.verifyCode
+          : undefined,
   }
 
   if (merged.type !== 'link') {
     delete merged.linkAppId
     delete merged.linkPath
+  }
+
+  if (merged.type !== 'scan') {
+    delete merged.verifyCode
   }
 
   return merged

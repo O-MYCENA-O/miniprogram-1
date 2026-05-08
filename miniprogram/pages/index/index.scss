@@ -2,7 +2,7 @@
 
 page {
   height: 100vh;
-  padding-top: 100rpx;
+  // padding-top: 100rpx;
   display: flex;
   flex-direction: column;
   background: $color-bg-page;
@@ -18,6 +18,12 @@ page {
 .scrollarea {
   flex: 1;
   overflow-y: hidden;
+}
+
+/** 底部固定「重新开始」条时，为滚动区留白*/
+.index-shell--flow-done .scrollarea {
+  margin-bottom:  env(safe-area-inset-bottom);
+  box-sizing: border-box;
 }
 
 .confetti-root {
@@ -310,8 +316,8 @@ page {
 
 .flow-complete-dock {
   flex-shrink: 0;
-  padding: 20rpx 44rpx;
-  padding-bottom: calc(20rpx + env(safe-area-inset-bottom));
+  padding: 40rpx 44rpx 20rpx;
+  padding-bottom: calc(60rpx + env(safe-area-inset-bottom));
   background: $color-bg-page;
   border-top: 1rpx solid rgba(58, 58, 58, 0.12);
   box-shadow: 0 -12rpx 40rpx rgba(58, 58, 58, 0.06);
@@ -343,3 +349,21 @@ page {
 .flow-complete-dock__btn--hover {
   opacity: 0.92;
 }
+
+/* =============================================================================
+ * LAYOUT DEBUG — 临时分区染色（已注释，需要时取消注释）
+ * =============================================================================
+ *
+ * page { background: #bfdbfe !important; }
+ * .index-header-fixed { background: #f9a8d4 !important; }
+ * .index-header-fixed .weui-navigation-bar__inner { background: #f472b6 !important; }
+ * .flow-clock { background: #22d3ee !important; }
+ * .index-shell { background: #fde047 !important; }
+ * .scrollarea { background: #bef264 !important; }
+ * .flow { background: #e9d5ff !important; }
+ * .flow-complete-summary { background: #c4b5fd !important; }
+ * .flow-card { background: #ffffff !important; outline: 2rpx solid #6366f1; }
+ * .flow-complete-dock-wrap { background: #fb923c !important; }
+ * .flow-complete-dock { background: #fdba74 !important; }
+ *
+ * ============================================================================= */
