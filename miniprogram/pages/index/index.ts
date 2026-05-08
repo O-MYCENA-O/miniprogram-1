@@ -2,6 +2,7 @@ import {
   applyTaskCompletion,
   flowTasksAllFinished,
   flowTasksWithInitialStatuses,
+  FlowTask,
 } from './flowModel'
 import {
   DEFAULT_PAGE_TITLE,
@@ -50,32 +51,32 @@ function getLast5AM(timestamp: number): number {
   return timestamp >= today5 ? today5 : today5 - 24 * 60 * 60 * 1000
 }
 
-/** CDN 背景音乐路径；音频文件已上传到GitHub；使用jsDelivr + Github搭建CDN */
+/** CDN 背景音乐路径；音频文件使用微信云开发存储 */
 const BGM_TRACK_POOL = [
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm1.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm2.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm3.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm4.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm5.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm6.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm7.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm8.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm9.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm10.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm11.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm12.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm13.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm14.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm15.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm16.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm17.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm18.MP3',
-  'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm19.MP3',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm1.MP3?sign=e1cf7a1df8574d6b4ddb0152ddfb3146&t=1778218330',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm2.MP3?sign=c57f82b3c6b8f6d3e301685e5f1cd881&t=1778218817',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm3.MP3?sign=ef77aa61c611a488b41c7fa6b3a699b2&t=1778218823',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm4.MP3?sign=0393d4d40f4ed0e3f26f1f7e7df52dd4&t=1778218826',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm5.MP3?sign=aebff2be374d5b1ca0de3362ba14ffd6&t=1778218830',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm6.MP3?sign=4fc18025cb31a05ca0d6d4369915f21e&t=1778218834',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm7.MP3?sign=9138a2b61b479b7b2a489428d678517b&t=1778218837',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm8.MP3?sign=eb750ab338f116945cc334876f0583c4&t=1778218843',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm9.MP3?sign=b3282104ae02d558a900b2f80fda1389&t=1778218846',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm10.MP3?sign=3c34a272e242f4fa827799fd45886133&t=1778218402',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm11.MP3?sign=899065217996c947656286cfa380e775&t=1778218586',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm12.MP3?sign=847f0b78711552f24c22dc94f71c4224&t=1778218613',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm13.MP3?sign=cf29929e8978aeb3eef063231de0fdd4&t=1778218622',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm14.MP3?sign=6e1427fed82ec9076d8d9df84dfc36dd&t=1778218633',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm15.MP3?sign=6e0bbe2e97f835ef83220e18e519328d&t=1778218644',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm16.MP3?sign=cda6867c410ec899690cb3e0e6ed7068&t=1778218723',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm17.MP3?sign=c402776955eb97668ef38d3adbcf90dc&t=1778218730',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm18.MP3?sign=425b25c7b625d243dbac899cae1745b5&t=1778218737',
+  'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm19.MP3?sign=7daf926060c475e10778a1cbd527c0ba&t=1778218741',
 ]
 
 function pickRandomBgmSrc(exclude?: string): string {
   const pool = BGM_TRACK_POOL
-  if (pool.length === 0) return 'https://cdn.jsdelivr.net/gh/O-MYCENA-O/MNRTbgm@v1.0.0/bgm1.MP3'
+  if (pool.length === 0) return 'https://636c-cloud1-d2gkw2blbb10d520b-1429581249.tcb.qcloud.la/bgm1.MP3?sign=e1cf7a1df8574d6b4ddb0152ddfb3146&t=1778218330'
   if (pool.length === 1) return pool[0]!
   let pick = pool[Math.floor(Math.random() * pool.length)]!
   let tries = 0

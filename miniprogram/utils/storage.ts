@@ -2,7 +2,7 @@
  * 本地任务配置存储：与 UI 解耦，负责读写与新旧格式合并。
  */
 
-import { FLOW_TASK_PRESETS, type TaskPreset, type TaskType } from '../pages/index/flowModel'
+import { FLOW_TASK_PRESETS, TaskPreset, TaskType } from '../pages/index/flowModel'
 
 const STORAGE_KEY = 'morning_routine_flow_tasks_v1'
 
